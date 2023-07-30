@@ -1,0 +1,8 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from numpy.random import randn
+
+df = pd.DataFrame(randn(500,4), 
+                  columns=['mon', 'tues', 'wed', 'thus'])
+print(df.plot(kind='hexbin', x='mon', y='wed', gridsize=15))
