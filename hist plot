@@ -1,0 +1,29 @@
+import pyodbc
+import matplotlib.pyplot as plt
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.express as xp
+import scipy.stats as stats
+import numpy as np
+
+user = 'DESKTOP-3QJN7S3'+"\)" + "user"  # sql server user name
+
+user_rep = user.replace(")" , "")
+
+conn = pyodbc.connect("Driver={SQL Server};"
+                      "Server=DESKTOP-3QJN7S3;" # Server name
+                      f"uid={user_rep}"
+                      "Database=data_analysis_project;" # selected database
+                      "Trusted_Connection=yes;")
+
+# Fetching the data from the selected table using SQL query
+df = pd.read_sql_query('''SELECT * FROM data_analysis_project.dbo.sales''', conn)
+
+df = df.drop('Product', axis=1)
+df['Order_Date'] = pd.to_datetime(df['Order_Date'])  # Convert to datetime if not already
+df['Order_year'] = df['Order_Date'].dt.year
+top100 = df['Price'].head(100)
+
+
+plt.hist(top100)
+plt.show()
