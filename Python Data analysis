@@ -1,0 +1,33 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+Data = pd.read_csv(r"C:\Users\user\Downloads\archive (3)\world-data-2023.csv")
+Data.head()
+
+Data = Data[['Country', 'Birth Rate', 'Fertility Rate', 'Infant mortality', 'Life expectancy', 'Physicians per thousand', 'Population']]
+
+Data['Population'] = Data['Population'].astype(str).str.replace(',', '')
+Data['Population'] = pd.to_numeric(Data['Population'], errors='coerce')
+
+columns = ['Country', 'Birth Rate', 'Fertility Rate', 'Infant mortality', 'Life expectancy', 'Physicians per thousand', 'Population']
+median_value = Data[columns].median(numeric_only=True)
+Data[columns] = Data[columns].fillna(median_value)
+
+Data.rename(columns = {'Birth Rate': 'Birth_Rate'}, inplace=True)
+Data.rename(columns = {'Fertility Rate': 'Fertility_Rate'}, inplace=True)
+Data.rename(columns = {'Infant mortality': 'Infant_mortality'}, inplace=True)
+Data.rename(columns = {'Life expectancy': 'Life_expectancy'}, inplace=True)
+Data.rename(columns = {'Physicians per thousand': 'Physicians_per_thousand'}, inplace=True)
+
+sns.pairplot(Data)
+
+correlation_matrix = Data.corr()
+plt.figure(figsize = (10, 8))
+sns.heatmap(correlation_matrix, annot=True)
+
+life_expectancy = Data.groupby('Country')['Life_expectancy'].mean().nlargest(5)
+
+plt.plot(life_expectancy)
+plt.show()
